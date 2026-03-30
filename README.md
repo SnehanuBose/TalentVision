@@ -1,70 +1,382 @@
-# Getting Started with Create React App
+# 🚀 TalentVision — AI-Powered Resume & Candidate Matching System
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+![Node.js](https://img.shields.io/badge/Node.js-18+-green)
+![Express](https://img.shields.io/badge/Express.js-Backend-blue)
+![MongoDB](https://img.shields.io/badge/MongoDB-Database-green)
+![FastAPI](https://img.shields.io/badge/FastAPI-ML_API-teal)
+![Python](https://img.shields.io/badge/Python-3.10+-yellow)
+![OpenAI](https://img.shields.io/badge/LLM-GPT--Powered-purple)
+![License](https://img.shields.io/badge/License-MIT-orange)
+![Status](https://img.shields.io/badge/Status-Active-success)
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 🧠 Overview
 
-### `npm start`
+TalentVision is an **AI-powered recruitment engine** that intelligently matches resumes to jobs and ranks candidates using **Machine Learning + LLM-based evaluation**.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+It simulates how a real recruiter evaluates candidates — combining:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+* Semantic understanding
+* Skill matching
+* Experience analysis
+* AI reasoning (LLM)
 
-### `npm test`
+---
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## ✨ Features
 
-### `npm run build`
+### 🔐 Authentication & Security
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+* JWT + Refresh Token system
+* Role-based access:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+  * Candidate
+  * Recruiter
+  * Admin
+* HttpOnly cookies
+* Rate limiting (brute-force protection)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+### 🤖 AI Resume Matching
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+* Sentence Transformer embeddings
+* Cross-encoder reranking
+* Skill extraction (regex + NLP)
+* Experience detection
+* Hybrid scoring system
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+---
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### 🧠 LLM Recruiter AI
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+* GPT-powered evaluation
+* Human-like reasoning
+* Outputs:
 
-## Learn More
+  * Score
+  * Strengths
+  * Weaknesses
+  * Explanation
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+---
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 📊 Candidate Ranking System
 
-### Code Splitting
+* Rank multiple candidates for a job
+* AI-based scoring pipeline
+* Recruiter-ready output
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+---
 
-### Analyzing the Bundle Size
+## 🏗️ System Architecture
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```mermaid
+flowchart LR
+    A[Frontend / Client] --> B[Node.js Backend]
+    B --> C[MongoDB]
+    B --> D[ML API - FastAPI]
 
-### Making a Progressive Web App
+    D --> E[Sentence Transformer]
+    D --> F[Cross Encoder]
+    D --> G[LLM - OpenAI GPT]
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+    G --> D
+    E --> D
+    F --> D
 
-### Advanced Configuration
+    D --> B
+    B --> A
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+---
 
-### Deployment
+## 🤖 AI Matching Pipeline
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+```mermaid
+flowchart TD
+    A[Resume Upload] --> B[Text Extraction]
+    B --> C[Skill Extraction]
+    B --> D[Embedding Generation]
 
-### `npm run build` fails to minify
+    D --> E[Semantic Similarity]
+    D --> F[Cross Encoder Score]
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+    C --> G[Skill Match Score]
+
+    E --> H[Hybrid Scoring Engine]
+    F --> H
+    G --> H
+
+    H --> I[LLM Evaluation]
+    I --> J[Final Ranking]
+```
+
+---
+
+## 📊 Candidate Ranking Flow
+
+```mermaid
+flowchart LR
+    A[Job Selected] --> B[Fetch Candidates]
+    B --> C[Send to ML API]
+
+    C --> D[Semantic Scoring]
+    C --> E[Skill Matching]
+    C --> F[LLM Evaluation]
+
+    D --> G[Final Score]
+    E --> G
+    F --> G
+
+    G --> H[Rank Candidates]
+```
+
+---
+
+## 📁 Project Structure
+
+```mermaid
+graph TD
+    A[TalentVision] --> B[backend]
+    A --> C[ml-api]
+    A --> D[frontend]
+
+    B --> B1[models]
+    B --> B2[routes]
+    B --> B3[controllers]
+    B --> B4[middleware]
+
+    C --> C1[main.py]
+```
+
+---
+
+## ⚙️ Setup Instructions
+
+### 1️⃣ Clone Repository
+
+```bash
+git clone https://github.com/your-username/TalentVision.git
+cd TalentVision
+```
+
+---
+
+### 2️⃣ Backend Setup
+
+```bash
+cd backend
+npm install
+```
+
+---
+
+### 3️⃣ Setup Environment Variables
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env`:
+
+```env
+PORT=5000
+MONGO_URI=your_mongodb_uri
+ACCESS_TOKEN_SECRET=your_secret
+REFRESH_TOKEN_SECRET=your_secret
+ML_API_URL=http://localhost:8000
+OPENAI_API_KEY=your_openai_key
+```
+
+---
+
+### 4️⃣ Run Backend
+
+```bash
+npm run dev
+```
+
+---
+
+### 5️⃣ Setup ML API
+
+```bash
+cd ../ml-api
+pip install -r requirements.txt
+```
+
+Run:
+
+```bash
+uvicorn main:app --reload --port 8000
+```
+
+---
+
+## 🔗 API Documentation
+
+---
+
+### 🔐 Auth
+
+#### Register
+
+```http
+POST /api/auth/register
+```
+
+#### Login
+
+```http
+POST /api/auth/login
+```
+
+#### Refresh
+
+```http
+GET /api/auth/refresh
+```
+
+#### Logout
+
+```http
+POST /api/auth/logout
+```
+
+---
+
+### 📄 Resume
+
+```http
+POST /api/resumes/upload
+```
+
+---
+
+### 💼 Jobs
+
+```http
+GET /api/jobs
+POST /api/jobs
+```
+
+---
+
+### 🤖 AI Matching
+
+```http
+POST /match_resume_jobs
+```
+
+---
+
+### 🧠 Candidate Ranking (CORE FEATURE)
+
+```http
+POST /rank_candidates_for_job
+```
+
+#### Request:
+
+```json
+{
+  "job": {
+    "id": "job1",
+    "title": "ML Engineer",
+    "description": "...",
+    "skills": ["python", "ml"]
+  },
+  "candidates": [
+    {
+      "id": "user1",
+      "resume": "text..."
+    }
+  ]
+}
+```
+
+---
+
+#### Response:
+
+```json
+{
+  "rankedCandidates": [
+    {
+      "candidateId": "user1",
+      "score": 91,
+      "llmScore": 94,
+      "matchedSkills": ["python", "ml"],
+      "reason": "Strong ML experience",
+      "strengths": ["ML", "projects"],
+      "weaknesses": ["no cloud"]
+    }
+  ]
+}
+```
+
+
+---
+
+## 🔐 Security
+
+* JWT Authentication
+* Refresh Tokens
+* HttpOnly Cookies
+* Rate Limiting
+* Role-Based Access Control
+
+---
+
+## 🧠 Tech Stack
+
+### Backend
+
+* Node.js
+* Express
+* MongoDB (Mongoose)
+
+### AI / ML
+
+* FastAPI
+* Sentence Transformers
+* Cross Encoder
+* OpenAI GPT
+
+### Dev Tools
+
+* ESLint
+* Prettier
+* Nodemon
+
+---
+
+## 🚀 Future Improvements
+
+* 📊 Recruiter dashboard UI
+* 🤖 AI interview question generator
+* 📄 Resume improvement suggestions
+* 📈 Hiring analytics
+* 🌐 SaaS multi-tenant system
+
+---
+
+## ⚠️ Notes
+
+* Do NOT commit `.env`
+* Use `.env.example`
+* Ensure MongoDB & ML API are running
+
+---
+
+## 👨‍💻 Contributors
+
+**Snehanu Bose , Ahamit Pal**
+
+---
+
+## ⭐ Support
+
+If you like this project, give it a ⭐ on GitHub!
