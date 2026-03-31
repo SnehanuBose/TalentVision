@@ -12,8 +12,8 @@ const jobRoutes = require("./routes/jobs");
 const resumeRoutes = require("./routes/resumes");
 
 // Middleware
-//const { apiLimiter } = require("./middleware/rateLimit");
-//const { initLoginLimiter } = require("./middleware/loginLimiter");
+const { apiLimiter } = require("./middleware/rateLimit");
+const { initLoginLimiter } = require("./middleware/loginLimiter");
 
 const app = express();
 
@@ -31,8 +31,8 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(morgan("dev"));
 
-// Rate limit all API routes
-//app.use("/api", apiLimiter);
+// Apply API rate limiting
+app.use("/api", apiLimiter);
 
 // -----------------------------
 // 📦 ROUTES
@@ -49,26 +49,20 @@ app.get("/", (req, res) => {
 // -----------------------------
 // 🗄️ DATABASE CONNECTION
 // -----------------------------
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => {
-  console.log("✅ MongoDB Connected");
+const PORT = process.env.PORT || 5000;
 
-  // 🔥 IMPORTANT: Initialize login limiter AFTER DB connect
-  //initLoginLimiter();
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log("✅ MongoDB Connected");
 
-  // -----------------------------
-  // 🚀 START SERVER
-  // -----------------------------
-  const PORT = process.env.PORT || 5000;
+    // 🔥 Initialize limiter AFTER DB connection
+    initLoginLimiter();
 
-  app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("❌ MongoDB Error:", err.message);
+    process.exit(1);
   });
-})
-.catch((err) => {
-  console.error("❌ MongoDB connection error:", err.message);
-  process.exit(1);
-});

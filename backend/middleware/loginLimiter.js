@@ -1,7 +1,7 @@
 const { RateLimiterMongo } = require("rate-limiter-flexible");
 const mongoose = require("mongoose");
 
-let loginLimiter;
+let loginLimiter = null;
 
 const initLoginLimiter = () => {
   loginLimiter = new RateLimiterMongo({
@@ -12,7 +12,9 @@ const initLoginLimiter = () => {
   });
 };
 
+const getLoginLimiter = () => loginLimiter;
+
 module.exports = {
   initLoginLimiter,
-  getLoginLimiter: () => loginLimiter,
+  getLoginLimiter,
 };

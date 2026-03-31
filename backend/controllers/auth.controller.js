@@ -1,38 +1,83 @@
 const bcrypt = require("bcryptjs");
-const User = require("../models/User");
-const { getLoginLimiter } = require("../middleware/loginLimiter");
+const jwt = require("jsonwebtoken");
 
-const loginLimiter = getLoginLimiter();
+const User = require("../models/User");
 const {
   generateAccessToken,
   generateRefreshToken,
 } = require("../utils/token");
 
+const { getLoginLimiter } = require("../middleware/loginLimiter");
+
+// -----------------------------
+// 📝 REGISTER
+// -----------------------------
 exports.register = async (req, res) => {
-  const { name, email, password, role } = req.body;
+  try {
+    const { name, email, password, role } = req.body;
 
-  const exists = await User.findOne({ email });
-  if (exists) return res.status(400).json({ msg: "User exists" });
+    if (!name || !email || !password) {
+      return res.status(400).json({ msg: "All fields are required" });
+    }
 
-  const hashed = await bcrypt.hash(password, 10);
+    const exists = await User.findOne({ email });
+    if (exists) {
+      return res.status(400).json({ msg: "User already exists" });
+    }
 
-  await User.create({ name, email, password: hashed, role });
+    const hashed = await bcrypt.hash(password, 10);
 
-  res.json({ msg: "Registered successfully" });
+    await User.create({
+      name,
+      email,
+      password: hashed,
+      role,
+    });
+
+    return res.json({ msg: "Registered successfully" });
+
+  } catch (err) {
+    console.error("Register Error:", err);
+    return res.status(500).json({ msg: "Server error" });
+  }
 };
 
+// -----------------------------
+// 🔐 LOGIN
+// -----------------------------
 exports.login = async (req, res) => {
+  const loginLimiter = getLoginLimiter();
+
+  // Limiter not ready
+  if (!loginLimiter) {
+    return res.status(503).json({
+      msg: "Server initializing, try again shortly",
+    });
+  }
+
   const { email, password } = req.body;
   const key = `${email}_${req.ip}`;
 
+  // 🔥 Rate limit check
   try {
     await loginLimiter.consume(key);
+  } catch (err) {
+    return res.status(429).json({
+      msg: "Too many login attempts. Try again later.",
+    });
+  }
 
+  try {
     const user = await User.findOne({ email });
-    if (!user) throw new Error();
+    if (!user) {
+      return res.status(400).json({ msg: "Invalid email or password" });
+    }
 
+    // Account lock check
     if (user.lockUntil && user.lockUntil > Date.now()) {
-      return res.status(423).json({ msg: "Account locked" });
+      return res.status(423).json({
+        msg: "Account temporarily locked. Try later.",
+      });
     }
 
     const valid = await bcrypt.compare(password, user.password);
@@ -44,9 +89,13 @@ exports.login = async (req, res) => {
       }
 
       await user.save();
-      throw new Error();
+
+      return res.status(400).json({
+        msg: "Invalid email or password",
+      });
     }
 
+    // ✅ SUCCESS
     user.loginAttempts = 0;
     user.lockUntil = null;
 
@@ -56,6 +105,7 @@ exports.login = async (req, res) => {
     user.refreshToken = refreshToken;
     await user.save();
 
+    // Reset limiter on success
     await loginLimiter.delete(key);
 
     res.cookie("refreshToken", refreshToken, {
@@ -64,39 +114,66 @@ exports.login = async (req, res) => {
       secure: false,
     });
 
-    res.json({ accessToken, role: user.role });
+    return res.json({
+      accessToken,
+      role: user.role,
+    });
 
   } catch (err) {
-    return res.status(429).json({
-      msg: "Too many attempts or invalid credentials",
-    });
+    console.error("Login Error:", err);
+    return res.status(500).json({ msg: "Server error" });
   }
 };
 
+// -----------------------------
+// 🔁 REFRESH TOKEN
+// -----------------------------
 exports.refresh = async (req, res) => {
-  const token = req.cookies.refreshToken;
-  if (!token) return res.sendStatus(401);
+  try {
+    const token = req.cookies.refreshToken;
+    if (!token) return res.sendStatus(401);
 
-  const jwt = require("jsonwebtoken");
-  const decoded = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
+    const decoded = jwt.verify(
+      token,
+      process.env.REFRESH_TOKEN_SECRET
+    );
 
-  const user = await User.findById(decoded.id);
-  if (!user || user.refreshToken !== token)
+    const user = await User.findById(decoded.id);
+    if (!user || user.refreshToken !== token) {
+      return res.sendStatus(403);
+    }
+
+    const accessToken = generateAccessToken(user);
+    return res.json({ accessToken });
+
+  } catch (err) {
+    console.error("Refresh Error:", err);
     return res.sendStatus(403);
-
-  const accessToken = generateAccessToken(user);
-  res.json({ accessToken });
+  }
 };
 
+// -----------------------------
+// 🚪 LOGOUT
+// -----------------------------
 exports.logout = async (req, res) => {
-  const token = req.cookies.refreshToken;
+  try {
+    const token = req.cookies.refreshToken;
 
-  const user = await User.findOne({ refreshToken: token });
-  if (user) {
-    user.refreshToken = null;
-    await user.save();
+    if (!token) return res.sendStatus(204);
+
+    const user = await User.findOne({ refreshToken: token });
+
+    if (user) {
+      user.refreshToken = null;
+      await user.save();
+    }
+
+    res.clearCookie("refreshToken");
+
+    return res.json({ msg: "Logged out" });
+
+  } catch (err) {
+    console.error("Logout Error:", err);
+    return res.status(500).json({ msg: "Server error" });
   }
-
-  res.clearCookie("refreshToken");
-  res.json({ msg: "Logged out" });
 };
