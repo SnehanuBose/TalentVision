@@ -12,8 +12,8 @@ const jobRoutes = require("./routes/jobs");
 const resumeRoutes = require("./routes/resumes");
 
 // Middleware
-const { apiLimiter } = require("./middleware/rateLimit");
-const { initLoginLimiter } = require("./middleware/loginLimiter");
+//const { apiLimiter } = require("./middleware/rateLimit");
+//const { initLoginLimiter } = require("./middleware/loginLimiter");
 
 const app = express();
 
@@ -32,7 +32,7 @@ app.use(cookieParser());
 app.use(morgan("dev"));
 
 // Rate limit all API routes
-app.use("/api", apiLimiter);
+//app.use("/api", apiLimiter);
 
 // -----------------------------
 // 📦 ROUTES
@@ -57,7 +57,7 @@ mongoose.connect(process.env.MONGO_URI, {
   console.log("✅ MongoDB Connected");
 
   // 🔥 IMPORTANT: Initialize login limiter AFTER DB connect
-  initLoginLimiter();
+  //initLoginLimiter();
 
   // -----------------------------
   // 🚀 START SERVER
