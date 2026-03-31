@@ -1,6 +1,8 @@
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
-const loginLimiter = require("../middleware/loginLimiter");
+const { getLoginLimiter } = require("../middleware/loginLimiter");
+
+const loginLimiter = getLoginLimiter();
 const {
   generateAccessToken,
   generateRefreshToken,
