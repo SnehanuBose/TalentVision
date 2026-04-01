@@ -7,13 +7,13 @@ const RecruiterDashboard = () => {
   const [tab, setTab] = useState("home");
     const navigate = useNavigate();
 
-    // useEffect(() => {
-    //   const token = localStorage.getItem("token");
+    useEffect(() => {
+      const token = localStorage.getItem("token");
 
-    //   if (!token) {
-    //     navigate("/login"); // redirect if not logged in
-    //   }
-    // }, [navigate]);
+      if (!token) {
+        navigate("/login"); // redirect if not logged in
+      }
+    }, [navigate]);
 
   return (
     <div>

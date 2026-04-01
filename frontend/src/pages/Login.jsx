@@ -47,12 +47,15 @@ function Login() {
     try {
       const response = await axios.post(
         "http://localhost:5000/api/auth/login",
-        formData,
-        { withCredentials: true }
+        formData
       );
+      console.log(response.data.accessToken);
       localStorage.setItem("token", response.data.accessToken);
       setSuccess("Login successful! Redirecting...");
-      setTimeout(() => navigate("/dashboard"), 1500);
+       if (response.status === 200) {
+      // ✅ Direct redirect (NO TOKEN)
+      navigate("/upload");
+    }
     } catch (err) {
       setError(err.response?.data?.msg || "Login failed. Please try again.");
     } finally {

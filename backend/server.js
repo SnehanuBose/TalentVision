@@ -11,6 +11,7 @@ const authRoutes = require("./routes/auth");
 const jobRoutes = require("./routes/jobs");
 const resumeRoutes = require("./routes/resumes");
 const recruiterRoutes = require("./routes/recruiter");
+
 // Middleware
 const { apiLimiter } = require("./middleware/rateLimit");
 const { initLoginLimiter } = require("./middleware/loginLimiter");
@@ -22,14 +23,16 @@ const app = express();
 // -----------------------------
 app.set("trust proxy", 1);
 
-app.use(cors({
-  origin: "http://localhost:3000",
-  credentials: true,
-}));
+
 
 app.use(express.json());
 app.use(cookieParser());
 app.use(morgan("dev"));
+
+app.use(cors({
+  origin: "http://localhost:3000",
+  credentials: true,
+}));
 
 // Apply API rate limiting
 app.use("/api", apiLimiter);

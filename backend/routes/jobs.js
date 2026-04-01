@@ -24,7 +24,7 @@ const Resume = require("../models/Resume");
 
     const candidates = resumes.map(r => ({
       id: r._id,
-      resume: r.parsedText || ""
+      resume: r.extractedText || ""
     }));
 
     const ranked = await rankCandidates(job, candidates);
