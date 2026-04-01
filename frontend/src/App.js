@@ -21,6 +21,8 @@ import JobPostings from "./components/JobPostings";
 import CandidateUpload from "./components/CandidateUpload";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import RecruiterDashboard from "./pages/RecruiterDashboard";
+import JobApplicants from "./pages/JobApplicants";
 
 function Dashboard({ onLogout }) {
   return (
@@ -112,6 +114,8 @@ function App() {
             )
           }
         />
+        <Route path="/dashboard" element={<RecruiterDashboard />} />
+<       Route path="/job/:id" element={<JobApplicants />} />
       </Routes>
     </Router>
   );

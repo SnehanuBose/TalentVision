@@ -10,7 +10,7 @@ const cookieParser = require("cookie-parser");
 const authRoutes = require("./routes/auth");
 const jobRoutes = require("./routes/jobs");
 const resumeRoutes = require("./routes/resumes");
-
+const recruiterRoutes = require("./routes/recruiter");
 // Middleware
 const { apiLimiter } = require("./middleware/rateLimit");
 const { initLoginLimiter } = require("./middleware/loginLimiter");
@@ -40,6 +40,7 @@ app.use("/api", apiLimiter);
 app.use("/api/auth", authRoutes);
 app.use("/api/jobs", jobRoutes);
 app.use("/api/resumes", resumeRoutes);
+app.use("/api/recruiter", recruiterRoutes);
 
 // Health check
 app.get("/", (req, res) => {

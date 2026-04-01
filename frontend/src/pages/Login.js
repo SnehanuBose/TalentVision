@@ -30,6 +30,9 @@ function Login() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  
+  
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setError("");
@@ -47,10 +50,11 @@ function Login() {
         formData,
         { withCredentials: true }
       );
+      localStorage.setItem("token", response.data.accessToken);
       setSuccess("Login successful! Redirecting...");
       setTimeout(() => navigate("/dashboard"), 1500);
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed. Please try again.");
+      setError(err.response?.data?.msg || "Login failed. Please try again.");
     } finally {
       setLoading(false);
     }
