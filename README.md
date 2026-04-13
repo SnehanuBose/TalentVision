@@ -374,6 +374,7 @@ POST /rank_candidates_for_job
 ## 👨‍💻 Contributors
 
 **Snehanu Bose , Ahamit Pal**
+**BLACKBOXAI (demo PR)**
 
 ---
 
